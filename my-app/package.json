@@ -1,0 +1,42 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "Проектът представлява Praxis Booking Appointment Application – SPA, реализирана с React, React Router и Context API. Приложението позволява регистрация на потребители (пациенти), преглед на каталог с лекари, виждане на детайлна информация за лекар и онлайн записване на час (частен преглед или по здравна каса), с история на прегледите за всеки потребител. Има ролеви модел с четири роли: ADMIN, DOCTOR, ASSISTANT и USER, като достъпът до отделните части на системата е защитен с route guards.",
+  "homepage": "https://github.com/mitetodb/booking-appointment-application#readme",
+  "bugs": {
+    "url": "https://github.com/mitetodb/booking-appointment-application/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitetodb/booking-appointment-application.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "main.jsx",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.12",
+    "fdir": "^6.5.0",
+    "nanoid": "^3.3.11",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.3",
+    "postcss": "^8.5.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.2",
+    "rollup": "^4.53.3",
+    "source-map-js": "^1.2.1",
+    "tinyglobby": "^0.2.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.6"
+  }
+}
