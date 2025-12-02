@@ -1,30 +1,73 @@
-import { useAuth } from '../../hooks/useAuth.js';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { authService } from '../../services/authService';
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
-  const handleDemoLogin = (e) => {
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
+
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // временно демо – ще го сменим с API call
-    login(
-      {
-        id: 'demo-user',
-        email: 'user@example.com',
-        firstName: 'Demo',
-        lastName: 'User',
-        role: 'USER',
-      },
-      'fake-jwt-token',
-    );
+    setError('');
+
+    try {
+      const data = await authService.login(form.email, form.password);
+      login(data.user, data.token);
+
+      const redirectTo = location.state?.from?.pathname || '/';
+      navigate(redirectTo);
+    } catch (err) {
+      setError('Invalid credentials or server error.');
+    }
   };
 
   return (
     <section>
       <h2>Login</h2>
-      <p>
-        Тук ще има реална login форма. В момента има демо бутон за бърз вход.
-      </p>
-      <button onClick={handleDemoLogin}>Demo Login as User</button>
+
+      <form onSubmit={handleSubmit} className="auth-form">
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          Password:
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        {error && <p className="error">{error}</p>}
+
+        <button type="submit">Login</button>
+      </form>
     </section>
   );
 };
