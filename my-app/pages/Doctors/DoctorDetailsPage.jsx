@@ -96,10 +96,31 @@ export const DoctorDetailsPage = () => {
 
       <section className="doctor-section">
         <h3>Schedule & Booking</h3>
-        <p>
-          работното време на лекаря и свободните слотове ще бъдат показани тук.
-        </p>
+
+        {successMsg ? (
+          <p className="success">{successMsg}</p>
+        ) : (
+          <>
+            {!selectedSlot && (
+              <BookingSlots
+                doctor={doctor}
+                onSelect={(slot) => setSelectedSlot(slot)}
+              />
+            )}
+
+            {selectedSlot && (
+              <BookingForm
+                doctor={doctor}
+                selectedSlot={selectedSlot}
+                onSuccess={(res) => {
+                  setSuccessMsg('Your appointment was successfully booked!');
+                }}
+              />
+            )}
+          </>
+        )}
       </section>
+      
     </section>
   );
 };
