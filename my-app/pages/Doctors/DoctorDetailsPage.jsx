@@ -1,13 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { doctorService } from '../../services/doctorService';
+import { BookingSlots } from '../../components/appointments/BookingSlots';
+import { BookingForm } from '../../components/appointments/BookingForm';
+import { useAuth } from '../../hooks/useAuth';
 
 export const DoctorDetailsPage = () => {
   const { doctorId } = useParams();
+  const { isAuthenticated, user } = useAuth();
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    setAuthReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!authReady) return;
+    // fetch doctor...
+  }, [doctorId, authReady]);
 
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -26,7 +42,7 @@ export const DoctorDetailsPage = () => {
     };
 
     fetchDoctor();
-  }, [doctorId]);
+  }, [doctorId, authReady]);
 
   if (loading) {
     return (
@@ -120,7 +136,7 @@ export const DoctorDetailsPage = () => {
           </>
         )}
       </section>
-      
+
     </section>
   );
 };

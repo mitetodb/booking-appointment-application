@@ -11,6 +11,7 @@ import { DoctorsCatalogPage } from './pages/Doctors/DoctorsCatalogPage.jsx';
 import { DoctorDetailsPage } from './pages/Doctors/DoctorDetailsPage.jsx';
 import { MyAppointmentsPage } from './pages/Appointments/MyAppointmentsPage.jsx';
 import { AdminDashboardPage } from './pages/Admin/AdminDashboardPage.jsx';
+import { UserProfilePage } from './pages/User/UserProfilePage.jsx';
 import { Roles } from './constants/role.js';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
       <Route element={<RequireAuth />}>
         <Route element={<PrivateLayout />}>
           <Route path="/appointments" element={<MyAppointmentsPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
         </Route>
       </Route>
 

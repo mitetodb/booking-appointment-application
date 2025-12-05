@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { appointmentService } from '../../services/appointmentService';
+import { toLocalDateTimeString } from '../../utils/dateUtils';
 
 export const BookingForm = ({ doctor, selectedSlot, onSuccess }) => {
   const [type, setType] = useState('PRIMARY');
@@ -14,7 +15,7 @@ export const BookingForm = ({ doctor, selectedSlot, onSuccess }) => {
 
     try {
       const payload = {
-        dateTime: selectedSlot.toISOString(),
+        dateTime: toLocalDateTimeString(selectedSlot),
         type,
         paymentType: payment
       };
