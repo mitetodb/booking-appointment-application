@@ -276,3 +276,37 @@ a {
   color: white;
   border-radius: 6px;
 }
+
+.users-table-wrapper {
+  margin-top: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.users-table-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.6rem;
+}
+
+.users-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+.users-table td:last-child {
+  text-align: right;
+}

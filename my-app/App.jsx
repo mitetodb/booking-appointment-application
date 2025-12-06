@@ -20,8 +20,7 @@ function App() {
       {/* Публични маршрути */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/doctors" element={<DoctorsCatalogPage />} />
-        <Route path="/doctors/:doctorId" element={<DoctorDetailsPage />} />
+       
 
         {/* Login/Register – само за guest */}
         <Route
@@ -45,8 +44,10 @@ function App() {
       {/* Частни маршрути – всички логнати */}
       <Route element={<RequireAuth />}>
         <Route element={<PrivateLayout />}>
-          <Route path="/appointments" element={<MyAppointmentsPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
+         <Route path="/doctors" element={<DoctorsCatalogPage />} />
+         <Route path="/doctors/:doctorId" element={<DoctorDetailsPage />} />
+         <Route path="/appointments" element={<MyAppointmentsPage />} />
+         <Route path="/profile" element={<UserProfilePage />} />
         </Route>
       </Route>
 
