@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { adminService } from "../../services/adminService";
-import { Roles } from "../../constants/roles";
+import { Roles } from "../../constants/role";
 
 export const EditUserModal = ({ user, onClose, onSaved }) => {
   const [role, setRole] = useState(user.role);

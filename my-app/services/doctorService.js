@@ -10,4 +10,24 @@ export const doctorService = {
     const response = await api.get(`/doctors/${id}`);
     return response.data;
   },
+
+  async getMyProfile() {
+    const response = await api.get('/doctor/me');
+    return response.data;
+  },
+
+  async updateMyWorkingHours(workingHours) {
+    const response = await api.put('/doctor/me/working-hours', { workingHours });
+    return response.data;
+  },
+
+  async getMyAppointments() {
+    const response = await api.get('/doctor/me/appointments');
+    return response.data;
+  },
+
+  async moveAppointment(appointmentId, payload) {
+    const response = await api.put(`/doctor/appointments/${appointmentId}/move`, payload);
+    return response.data;
+  }
 };

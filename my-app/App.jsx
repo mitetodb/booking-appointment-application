@@ -9,6 +9,8 @@ import { LoginPage } from './pages/Auth/LoginPage.jsx';
 import { RegisterPage } from './pages/Auth/RegisterPage.jsx';
 import { DoctorsCatalogPage } from './pages/Doctors/DoctorsCatalogPage.jsx';
 import { DoctorDetailsPage } from './pages/Doctors/DoctorDetailsPage.jsx';
+import { DoctorSchedulePage } from './pages/Doctors/DoctorSchedulePage.jsx';
+import { DoctorAppointmentsPage } from './pages/Doctors/DoctorAppointmentsPage.jsx';
 import { MyAppointmentsPage } from './pages/Appointments/MyAppointmentsPage.jsx';
 import { AdminDashboardPage } from './pages/Admin/AdminDashboardPage.jsx';
 import { UserProfilePage } from './pages/User/UserProfilePage.jsx';
@@ -17,12 +19,12 @@ import { Roles } from './constants/role.js';
 function App() {
   return (
     <Routes>
-      {/* Публични маршрути */}
+      {/* Public */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<HomePage />} />
        
 
-        {/* Login/Register – само за guest */}
+        {/* Login/Register – guest only */}
         <Route
           path="/login"
           element={
@@ -41,13 +43,21 @@ function App() {
         />
       </Route>
 
-      {/* Частни маршрути – всички логнати */}
+      {/* private - authenticated */}
       <Route element={<RequireAuth />}>
         <Route element={<PrivateLayout />}>
          <Route path="/doctors" element={<DoctorsCatalogPage />} />
          <Route path="/doctors/:doctorId" element={<DoctorDetailsPage />} />
          <Route path="/appointments" element={<MyAppointmentsPage />} />
          <Route path="/profile" element={<UserProfilePage />} />
+        </Route>
+      </Route>
+
+      {/* doctor-only */}
+      <Route element={<RequireRole allowedRoles={[Roles.DOCTOR]} />}>
+        <Route element={<PrivateLayout />}>
+          <Route path="/doctor/schedule" element={<DoctorSchedulePage />} />
+          <Route path="/doctor/appointments" element={<DoctorAppointmentsPage />} />
         </Route>
       </Route>
 

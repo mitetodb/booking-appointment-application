@@ -310,3 +310,33 @@ a {
 .users-table td:last-child {
   text-align: right;
 }
+
+.schedule-list {
+  list-style: none;
+  padding: 0;
+}
+
+.schedule-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: .5rem 1rem;
+  margin-bottom: .5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.working-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.doctor-actions button {
+  margin-left: .5rem;
+}
+
+.btn.small {
+  padding: .3rem .5rem;
+  font-size: .8rem;
+}
