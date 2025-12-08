@@ -11,6 +11,8 @@ import { DoctorsCatalogPage } from './pages/Doctors/DoctorsCatalogPage.jsx';
 import { DoctorDetailsPage } from './pages/Doctors/DoctorDetailsPage.jsx';
 import { DoctorSchedulePage } from './pages/Doctors/DoctorSchedulePage.jsx';
 import { DoctorAppointmentsPage } from './pages/Doctors/DoctorAppointmentsPage.jsx';
+import { AssistantDashboardPage } from './pages/Assistant/AssistantDashboardPage.jsx';
+import { AssistantDoctorAppointmentsPage } from './pages/Assistant/AssistantDoctorAppointmentsPage.jsx';
 import { MyAppointmentsPage } from './pages/Appointments/MyAppointmentsPage.jsx';
 import { AdminDashboardPage } from './pages/Admin/AdminDashboardPage.jsx';
 import { UserProfilePage } from './pages/User/UserProfilePage.jsx';
@@ -58,6 +60,14 @@ function App() {
         <Route element={<PrivateLayout />}>
           <Route path="/doctor/schedule" element={<DoctorSchedulePage />} />
           <Route path="/doctor/appointments" element={<DoctorAppointmentsPage />} />
+        </Route>
+      </Route>
+
+      {/* assistant-only */}
+      <Route element={<RequireRole allowedRoles={[Roles.ASSISTANT]} />}>
+        <Route element={<PrivateLayout />}>
+          <Route path="/assistant" element={<AssistantDashboardPage />} />
+          <Route path="/assistant/doctor/:doctorId" element={<AssistantDoctorAppointmentsPage />} />
         </Route>
       </Route>
 
