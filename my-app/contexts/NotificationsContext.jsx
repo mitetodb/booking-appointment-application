@@ -23,7 +23,13 @@ export const NotificationsProvider = ({ children }) => {
       const data = await notificationService.getMyNotifications();
       setNotifications(data);
     } catch (err) {
+      if (err.response?.status === 403) {
+        console.debug('Notifications not available (403 Forbidden)');
+        setNotifications([]);
+        return;
+      }
       console.error('Failed to load notifications', err);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }

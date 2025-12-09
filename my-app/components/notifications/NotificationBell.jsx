@@ -35,13 +35,13 @@ export const NotificationBell = () => {
 
           <ul className="notif-list">
             {notifications.length === 0 && (
-              <li className="notif-empty">No notifications.</li>
+              <li className="notif-empty card">No notifications.</li>
             )}
 
             {notifications.map((n) => (
               <li
                 key={n.id}
-                className={`notif-item ${n.read ? 'read' : 'unread'}`}
+                className={`notif-item card ${n.read ? 'read' : 'unread'}`}
                 onClick={() => handleItemClick(n)}
               >
                 <div className="notif-message">{n.message}</div>

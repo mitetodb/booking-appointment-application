@@ -62,7 +62,7 @@ export const AssistantDoctorAppointmentsPage = () => {
 
       <ul className="appointments-list" style={{ marginTop: "1rem" }}>
         {appointments.map((a) => (
-          <li key={a.id} className="appointment-item">
+          <li key={a.id} className="appointment-item card">
             <div>
               <strong>{a.patientName}</strong>
               <div>

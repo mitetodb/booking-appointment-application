@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
 import { Roles } from '../../constants/role.js';
@@ -5,6 +6,7 @@ import { NotificationBell } from '../notifications/NotificationBell';
 
 export const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="header">
@@ -13,12 +15,33 @@ export const Header = () => {
           Praxis Booking
         </Link>
 
-        <nav className="nav">
-          <NavLink to="/doctors">Doctors</NavLink>
-          {isAuthenticated && <NavLink to="/appointments">My Appointments</NavLink>}
-          {/* Admin shortcut */}
+        <button className="mobile-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
+
+        <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+          <NavLink to="/doctors" onClick={() => setMenuOpen(false)}>Doctors</NavLink>
+          
+          {isAuthenticated && (
+            <>
+              <NavLink to="/appointments" onClick={() => setMenuOpen(false)}>My Appointments</NavLink>
+              <NavLink to="/profile" onClick={() => setMenuOpen(false)}>Profile</NavLink>
+            </>
+          )}
+          
+          {isAuthenticated && user?.role === Roles.DOCTOR && (
+            <>
+              <NavLink to="/doctor/appointments" onClick={() => setMenuOpen(false)}>My Patients</NavLink>
+              <NavLink to="/doctor/schedule" onClick={() => setMenuOpen(false)}>Schedule</NavLink>
+            </>
+          )}
+          
+          {isAuthenticated && user?.role === Roles.ASSISTANT && (
+            <NavLink to="/assistant" onClick={() => setMenuOpen(false)}>Assistant Dashboard</NavLink>
+          )}
+          
           {isAuthenticated && user?.role === Roles.ADMIN && (
-            <NavLink to="/admin">Admin</NavLink>
+            <NavLink to="/admin" onClick={() => setMenuOpen(false)}>Admin</NavLink>
           )}
         </nav>
       </div>

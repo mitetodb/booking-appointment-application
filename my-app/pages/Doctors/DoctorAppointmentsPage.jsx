@@ -41,7 +41,7 @@ export const DoctorAppointmentsPage = () => {
 
       <ul className="appointments-list">
         {appointments.map((a) => (
-          <li key={a.id} className="appointment-item">
+          <li key={a.id} className="appointment-item card">
             <div>
               <strong>{a.patientName}</strong>
               <div>

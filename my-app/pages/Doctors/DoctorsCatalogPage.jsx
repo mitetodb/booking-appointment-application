@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { doctorService } from '../../services/doctorService';
 import { DoctorCard } from '../../components/doctors/DoctorCard';
+import { ErrorBox } from '../../components/common/ErrorBox';
 
 export const DoctorsCatalogPage = () => {
   const [doctors, setDoctors] = useState([]);
@@ -80,10 +81,10 @@ export const DoctorsCatalogPage = () => {
       </header>
 
       {loading && <p>Loading doctors...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <ErrorBox message={error} />}
 
       {!loading && !error && filtered.length === 0 && (
-        <p>No doctors match your criteria.</p>
+        <ErrorBox message="No doctors match your criteria." />
       )}
 
       <div className="doctor-grid">

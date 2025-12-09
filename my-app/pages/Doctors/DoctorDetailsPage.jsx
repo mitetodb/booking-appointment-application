@@ -4,6 +4,7 @@ import { doctorService } from '../../services/doctorService';
 import { BookingSlots } from '../../components/appointments/BookingSlots';
 import { BookingForm } from '../../components/appointments/BookingForm';
 import { useAuth } from '../../hooks/useAuth';
+import { ErrorBox } from '../../components/common/ErrorBox';
 
 export const DoctorDetailsPage = () => {
   const { doctorId } = useParams();
@@ -53,19 +54,11 @@ export const DoctorDetailsPage = () => {
   }
 
   if (error) {
-    return (
-      <section>
-        <p className="error">{error}</p>
-      </section>
-    );
+    return <ErrorBox message={error} />;
   }
 
-  if (!doctor) {
-    return (
-      <section>
-        <p>Doctor not found.</p>
-      </section>
-    );
+  if (!loading && !doctor) {
+    return <ErrorBox message="Doctor not found." />;
   }
 
   return (

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export const DoctorCard = ({ doctor }) => {
   return (
-    <article className="doctor-card">
+    <article className="doctor-card card">
       <div className="doctor-card-avatar">
         <img
           src={doctor.imageUrl || 'https://via.placeholder.com/80?text=Dr'}

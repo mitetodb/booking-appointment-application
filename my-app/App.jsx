@@ -16,6 +16,7 @@ import { AssistantDoctorAppointmentsPage } from './pages/Assistant/AssistantDoct
 import { MyAppointmentsPage } from './pages/Appointments/MyAppointmentsPage.jsx';
 import { AdminDashboardPage } from './pages/Admin/AdminDashboardPage.jsx';
 import { UserProfilePage } from './pages/User/UserProfilePage.jsx';
+import { NotFoundPage } from './components/common/NotFoundPage.jsx';
 import { Roles } from './constants/role.js';
 
 function App() {
@@ -80,7 +81,8 @@ function App() {
         </Route>
       </Route>
 
-      {/* TODO: 404 page */}
+      {/* 404 page */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

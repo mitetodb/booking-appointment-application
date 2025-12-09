@@ -3,10 +3,12 @@ import { appointmentService } from '../../services/appointmentService';
 import { doctorService } from '../../services/doctorService';
 import { AppointmentEditModal } from '../../components/appointments/AppointmentEditModal';
 import { AppointmentCancelModal } from '../../components/appointments/AppointmentCancelModal';
+import { ErrorBox } from '../../components/common/ErrorBox';
 
 export const MyAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const [editing, setEditing] = useState(null);
   const [editingDoctor, setEditingDoctor] = useState(null);
@@ -14,9 +16,15 @@ export const MyAppointmentsPage = () => {
 
   useEffect(() => {
     const load = async () => {
-      const data = await appointmentService.getMyAppointments();
-      setAppointments(data);
-      setLoading(false);
+      try {
+        const data = await appointmentService.getMyAppointments();
+        setAppointments(data || []);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to load appointments.');
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
@@ -47,6 +55,8 @@ export const MyAppointmentsPage = () => {
     .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))[0];
 
   if (loading) return <p>Loading appointments...</p>;
+  if (error) return <ErrorBox message={error} />;
+  if (!appointments || appointments.length === 0) return <ErrorBox message="You have no appointments." />;
 
   return (
     <section>
@@ -70,7 +80,7 @@ export const MyAppointmentsPage = () => {
 
       <ul className="appointments-list">
         {appointments.map((a) => (
-          <li key={a.id} className="appointment-item">
+          <li key={a.id} className="appointment-item card">
             <div>
               <strong>{a.doctorName}</strong>
               <div>

@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { userService } from '../../services/userService';
 import { useAuth } from '../../hooks/useAuth';
+import { ErrorBox } from '../../components/common/ErrorBox';
 
 export const UserProfilePage = () => {
-  const { user, login } = useAuth(); // login ще обнови контекста след update
+  const { user, login } = useAuth();
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   const [form, setForm] = useState({
     firstName: '',
@@ -25,15 +28,26 @@ export const UserProfilePage = () => {
 
   useEffect(() => {
     const load = async () => {
-      const data = await userService.getProfile();
-      setProfile(data);
-      setForm({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        imageUrl: data.imageUrl || '',
-        country: data.country || '',
-        address: data.address || ''
-      });
+      try {
+        const data = await userService.getProfile();
+        if (!data) {
+          setLoadError('Profile not found.');
+          return;
+        }
+        setProfile(data);
+        setForm({
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          imageUrl: data.imageUrl || '',
+          country: data.country || '',
+          address: data.address || ''
+        });
+      } catch (err) {
+        console.error(err);
+        setLoadError('Failed to load profile.');
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
@@ -93,7 +107,9 @@ export const UserProfilePage = () => {
     }
   };
 
-  if (!profile) return <p>Loading profile...</p>;
+  if (loading) return <p>Loading profile...</p>;
+  if (loadError) return <ErrorBox message={loadError} />;
+  if (!profile) return <ErrorBox message="Profile not found." />;
 
   return (
     <section className="profile-page">
