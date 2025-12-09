@@ -1,6 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
 import { Roles } from '../../constants/role.js';
+import { NotificationBell } from '../notifications/NotificationBell';
 
 export const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -29,6 +30,8 @@ export const Header = () => {
             <NavLink to="/register">Register</NavLink>
           </>
         )}
+
+        {isAuthenticated && <NotificationBell />}
 
         {isAuthenticated && (
           <div className="user-info">

@@ -40,11 +40,33 @@ export const MyAppointmentsPage = () => {
     setCancelId(null);
   };
 
+  const now = new Date();
+
+  const upcoming = appointments
+    .filter((a) => new Date(a.dateTime) > now)
+    .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))[0];
+
   if (loading) return <p>Loading appointments...</p>;
 
   return (
     <section>
       <h2>My Appointments</h2>
+
+      {upcoming && (
+        <div className="upcoming-box">
+          <h3>Upcoming appointment</h3>
+          <p>
+            With <strong>{upcoming.doctorName}</strong> on{' '}
+            <strong>
+              {new Date(upcoming.dateTime).toLocaleDateString()}{' '}
+              {new Date(upcoming.dateTime).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </strong>
+          </p>
+        </div>
+      )}
 
       <ul className="appointments-list">
         {appointments.map((a) => (
