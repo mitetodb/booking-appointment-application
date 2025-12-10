@@ -1,32 +1,365 @@
-Проектът представлява Praxis Booking Appointment Application – SPA, реализирана с React, React Router и Context API. Приложението позволява регистрация на потребители (пациенти), преглед на каталог с лекари, виждане на детайлна информация за лекар и онлайн записване на час (частен преглед или по здравна каса), с история на прегледите за всеки потребител. Има ролеви модел с четири роли: ADMIN, DOCTOR, ASSISTANT и USER, като достъпът до отделните части на системата е защитен с route guards.
+# 🏥 Praxis Booking Appointment Application – Frontend
 
-Frontend (React SPA):
+A modern React Single Page Application (SPA) for managing medical appointment bookings within the Praxis Clinic System. Built with React 18, Vite, and React Router, providing a comprehensive UI for patients, doctors, assistants, and administrators.
 
-GitHub: https://github.com/mitetodb/booking-appointment-application
+## 📌 Overview
 
-Backend (Spring REST API, използван от React приложението е необходим за пълната функционалност):
+This frontend application provides a complete booking system with role-based access control, real-time validation, internationalization support, and seamless integration with a Spring Boot REST API backend.
 
-GitHub: https://github.com/mitetodb/booking-appointment-svc
+**Repository:** [booking-appointment-application](https://github.com/mitetodb/booking-appointment-application)  
+**Backend API:** [booking-appointment-svc](https://github.com/mitetodb/booking-appointment-svc)
 
-Инструкции за стартиране:
+---
 
-1. Стартиране на REST API:
+## 🏗️ Architecture
 
-- Клониране на booking-appointment-svc
+### Application Structure
 
-- Конфигуриране на MySQL / PostgreSQL през Docker (описано в README в backend репото)
+```
+┌─────────────────────────────────────────────────────────┐
+│                    React Application                     │
+├─────────────────────────────────────────────────────────┤
+│                                                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Contexts   │  │   Services   │  │   Components │  │
+│  │              │  │              │  │              │  │
+│  │ • Auth       │  │ • API Client │  │ • Pages      │  │
+│  │ • Language   │  │ • Auth       │  │ • Layouts    │  │
+│  │ • Notifications│ │ • Doctors   │  │ • Forms      │  │
+│  └──────────────┘  │ • Appointments│ │ • Modals     │  │
+│                    │ • Assistant  │  │ • Routing    │  │
+│                    │ • Admin      │  └──────────────┘  │
+│                    └──────────────┘                    │
+│                           │                             │
+│                           ▼                             │
+│                    ┌──────────────┐                    │
+│                    │  REST API    │                    │
+│                    │ (Spring Boot)│                    │
+│                    └──────────────┘                    │
+└─────────────────────────────────────────────────────────┘
+```
 
-- mvn spring-boot:run
+### Key Architectural Patterns
 
-2. Стартиране на React приложението:
+- **Context API**: Global state management for authentication, language, and notifications
+- **Service Layer**: Centralized API communication with Axios interceptors
+- **Route Guards**: Protected routes based on authentication and role
+- **Component Composition**: Reusable UI components with clear separation of concerns
+- **Custom Hooks**: Encapsulated logic for auth, translations, and notifications
 
-- Клониране на booking-appointment-application
+---
 
-- npm install
+## 🛠️ Tech Stack
 
-- npm run dev
+| Category | Technology |
+|----------|-----------|
+| **Framework** | React 18.3 |
+| **Build Tool** | Vite 7.2 |
+| **Routing** | React Router 6.30 |
+| **HTTP Client** | Axios 1.5 |
+| **State Management** | Context API (React) |
+| **Styling** | Custom CSS with CSS Variables |
+| **Internationalization** | Custom i18n implementation |
 
-- Отваряне на адреса, изписан от Vite (обикновено http://localhost:5173
-)
+---
 
-Приложението използва client-side routing (React Router), контекст за автентикация, контролирани форми (login/register/booking), работа с REST API за CRUD операции върху appointments, както и базова валидация и обработка на грешки.
+## 📁 Project Structure
+
+```
+my-app/
+├── components/              # Reusable UI components
+│   ├── admin/              # Admin-specific components
+│   ├── appointments/       # Appointment booking & management
+│   ├── assistant/          # Assistant-specific components
+│   ├── common/             # Shared components (ErrorBoundary, Loading, etc.)
+│   ├── doctors/            # Doctor-related components
+│   ├── layout/             # Layout components (Header, Footer, Layouts)
+│   ├── notifications/      # Notification components
+│   └── routing/            # Route guards (RequireAuth, RequireRole)
+│
+├── constants/              # Application constants
+│   ├── role.js            # User role definitions
+│   └── specialties.js     # Medical specialties data
+│
+├── contexts/               # React Context providers
+│   ├── AuthContext.jsx    # Authentication state
+│   ├── LanguageContext.jsx # i18n state
+│   └── NotificationsContext.jsx # Notifications state
+│
+├── hooks/                  # Custom React hooks
+│   ├── useAuth.js         # Authentication hook
+│   ├── useNotifications.js # Notifications hook
+│   └── useTranslation.js  # Translation hook
+│
+├── pages/                  # Page components
+│   ├── Admin/             # Admin dashboard
+│   ├── Appointments/      # User appointments
+│   ├── Assistant/         # Assistant dashboard
+│   ├── Auth/              # Login/Register
+│   ├── Doctors/           # Doctor catalog & details
+│   ├── Home/              # Homepage
+│   └── User/              # User profile
+│
+├── services/               # API service layer
+│   ├── apiClient.js       # Axios configuration & interceptors
+│   ├── authService.js     # Authentication API
+│   ├── doctorService.js   # Doctor-related API
+│   ├── appointmentService.js # Appointment API
+│   ├── assistantService.js  # Assistant API
+│   ├── adminService.js    # Admin API
+│   ├── userService.js     # User profile API
+│   └── notificationService.js # Notifications API
+│
+├── translations/           # i18n translation files
+│   ├── en.js              # English
+│   ├── bg.js              # Bulgarian
+│   └── de.js              # German
+│
+├── utils/                  # Utility functions
+│   ├── dateUtils.js       # Date formatting utilities
+│   ├── generateSlots.js   # Time slot generation
+│   └── validation.js     # Input validation functions
+│
+├── App.jsx                 # Main app component with routes
+├── main.jsx                # Application entry point
+└── index.css               # Global styles
+```
+
+---
+
+## 🚀 Features
+
+### 👤 User (Patient)
+- User registration and authentication (JWT)
+- Browse public doctor catalog
+- View detailed doctor profiles with specialties
+- Book appointments with 20-minute time slots
+- Edit or cancel own appointments
+- View appointment history
+- Receive in-app notifications
+- Update personal profile
+
+### 🩺 Doctor Panel
+- View schedule and upcoming patient list
+- Manage working hours (daily schedule)
+- Edit or cancel appointments
+- View appointment details
+
+### 🧑‍💼 Assistant Panel
+- View assigned doctors
+- Manage appointments for assigned doctors
+- Create new appointments for patients (desk/phone workflow)
+- Edit or cancel appointments
+- Select patients from user list
+
+### 🔧 Admin Panel
+- List all registered users
+- Change user roles (Admin, Doctor, Assistant, User)
+- Change account status (Active, Blocked, Inactive)
+- Manage Assistant ↔ Doctor assignments
+
+---
+
+## 🔐 Authentication & Authorization
+
+### Authentication Flow
+
+1. **Login/Register** → Backend returns JWT token
+2. **Token Storage** → Stored in `localStorage` as `booking_app_auth`
+3. **Request Interceptor** → Axios automatically attaches `Authorization: Bearer <token>` header
+4. **Token Expiration** → App automatically logs out on 401 responses
+
+### Route Protection
+
+- **Public Routes**: `/`, `/doctors`, `/login`, `/register`
+- **Authenticated Routes**: `/appointments`, `/profile`, `/doctors/:doctorId`
+- **Role-Based Routes**:
+  - `DOCTOR` → `/doctor/schedule`, `/doctor/appointments`
+  - `ASSISTANT` → `/assistant`, `/assistant/doctor/:doctorId`
+  - `ADMIN` → `/admin`
+
+### Route Guards
+
+- `RequireAuth`: Ensures user is authenticated
+- `RequireGuest`: Ensures user is NOT authenticated (for login/register)
+- `RequireRole`: Ensures user has specific role(s)
+
+---
+
+## ✅ Data Validation & Error Handling
+
+### Client-Side Validation
+
+Centralized validation utilities (`utils/validation.js`) provide:
+- Email format validation
+- Password strength (minimum 6 characters)
+- Name validation (minimum 2 characters)
+- URL format validation
+- Date/time validation
+- UUID format validation
+- Appointment type validation (PRIMARY, FOLLOW_UP)
+- Payment type validation (PRIVATE, NHIF)
+
+### Error Handling
+
+- **Form Validation**: Real-time validation with field-specific error messages
+- **API Error Handling**: Comprehensive error extraction from API responses
+- **Defensive Programming**: Checks for null/undefined data and array types
+- **User Feedback**: Clear, translated error messages displayed to users
+- **Error Boundary**: Catches React component errors and displays fallback UI
+
+### API Interceptors
+
+- **Request Interceptor**: Attaches JWT token and handles corrupted localStorage
+- **Response Interceptor**: Logs errors and provides detailed error information
+
+---
+
+## 🌍 Internationalization (i18n)
+
+The application supports multiple languages:
+- **English** (en)
+- **Bulgarian** (bg)
+- **German** (de)
+
+Language switching is available via `LanguageSwitcher` component in the header. All user-facing text is translated, including:
+- Form labels and placeholders
+- Error messages
+- Button labels
+- Page titles and descriptions
+
+---
+
+## 🔌 API Integration
+
+### Base Configuration
+
+- **Base URL**: `http://localhost:8082/api`
+- **Content-Type**: `application/json`
+- **Authentication**: JWT Bearer token in `Authorization` header
+
+### Service Layer
+
+Each service module (`authService`, `doctorService`, etc.) encapsulates API endpoints:
+- **GET**: Fetch data
+- **POST**: Create resources
+- **PUT**: Update resources
+- **DELETE**: Remove resources
+
+### Error Response Handling
+
+API errors are handled consistently:
+- Network errors: "Could not reach the server"
+- 400 Bad Request: Validation error messages
+- 401 Unauthorized: Automatic logout
+- 403 Forbidden: Permission denied message
+- 404 Not Found: Resource not found message
+- 500+ Server Error: Generic server error message
+
+---
+
+## 📦 Installation & Setup
+
+### Prerequisites
+
+- Node.js 16+ and npm
+- Backend API running (see [backend repository](https://github.com/mitetodb/booking-appointment-svc))
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/mitetodb/booking-appointment-application.git
+cd booking-appointment-application/my-app
+
+# Install dependencies
+npm install
+```
+
+### Development
+
+```bash
+# Start development server
+npm run dev
+
+# App will be available at:
+# http://localhost:5173
+```
+
+### Build
+
+```bash
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### Backend Setup
+
+1. Clone the backend repository: [booking-appointment-svc](https://github.com/mitetodb/booking-appointment-svc)
+2. Configure MySQL/PostgreSQL (see backend README)
+3. Start the backend: `mvn spring-boot:run`
+4. Backend should run on `http://localhost:8082`
+
+---
+
+## 🎨 UI/Styling
+
+- **Custom CSS**: Modern, responsive design with CSS variables
+- **Design System**: Consistent color scheme, typography, and spacing
+- **Responsive Layout**: Mobile-friendly design
+- **Component Styling**: Modular CSS with reusable classes
+- **Form Validation Styles**: Visual feedback for input errors (`.input-error`, `.field-error`)
+
+---
+
+## 🔧 Development Notes
+
+### Environment Variables
+
+- `VITE_AI_MODEL`: AI model selection (default: `claude-haiku-4.5`)
+
+### Code Organization
+
+- **Components**: Functional components with hooks
+- **Services**: Pure functions for API calls
+- **Contexts**: Global state management
+- **Utils**: Pure utility functions
+- **Constants**: Static data and configuration
+
+### Best Practices
+
+- All API calls go through service layer
+- Form validation happens before API calls
+- Error messages are user-friendly and translated
+- Defensive checks prevent crashes from invalid data
+- Token management is handled automatically by interceptors
+
+---
+
+## 📝 License
+
+ISC
+
+---
+
+## 🤝 Contributing
+
+This is a private project. For issues or questions, please contact the repository owner.
+
+---
+
+## 🏁 Conclusion
+
+The frontend provides a clean SPA architecture with:
+- ✅ Multi-role support (User, Doctor, Assistant, Admin)
+- ✅ Comprehensive input validation and error handling
+- ✅ Internationalization support
+- ✅ Role-based route protection
+- ✅ Real-time notifications
+- ✅ Responsive, modern UI
+- ✅ Seamless backend integration
+
+Designed for performance, maintainability, and real-world clinic workflows.
