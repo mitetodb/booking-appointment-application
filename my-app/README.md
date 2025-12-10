@@ -296,12 +296,59 @@ npm run build
 npm run preview
 ```
 
+### Environment Variables
+
+Create a `.env` file in the `my-app` directory (see `env.example`):
+
+```env
+# Backend API Base URL
+VITE_API_BASE_URL=http://localhost:8082/api
+
+# AI Model (optional)
+VITE_AI_MODEL=claude-haiku-4.5
+```
+
 ### Backend Setup
 
 1. Clone the backend repository: [booking-appointment-svc](https://github.com/mitetodb/booking-appointment-svc)
 2. Configure MySQL/PostgreSQL (see backend README)
 3. Start the backend: `mvn spring-boot:run`
 4. Backend should run on `http://localhost:8082`
+
+---
+
+## 🚀 Deployment
+
+The application can be deployed to **Vercel** or **Netlify** for free. Both platforms support automatic deployments from GitHub.
+
+### Quick Deploy to Vercel
+
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+3. Click "Add New Project" and import your repository
+4. Configure:
+   - Framework Preset: **Vite**
+   - Root Directory: `my-app`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. Add environment variable: `VITE_API_BASE_URL` = `https://your-backend-domain.com/api`
+6. Click "Deploy"
+
+### Quick Deploy to Netlify
+
+1. Push your code to GitHub
+2. Go to [netlify.com](https://netlify.com) and sign in with GitHub
+3. Click "Add new site" → "Import an existing project"
+4. Configure:
+   - Base directory: `my-app`
+   - Build command: `npm run build`
+   - Publish directory: `my-app/dist`
+5. Add environment variable: `VITE_API_BASE_URL` = `https://your-backend-domain.com/api`
+6. Click "Deploy site"
+
+📖 **Detailed deployment guide**: See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete instructions.
+
+**Note**: Make sure your backend API has CORS configured to allow requests from your deployment domain.
 
 ---
 
