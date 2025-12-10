@@ -8,6 +8,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { Roles } from '../../constants/role';
 import { SpecialtySelector } from '../../components/common/SpecialtySelector';
 import { AssistantSelector } from '../../components/common/AssistantSelector';
+import { validateName, validateURL, validatePassword, validatePasswordMatch, sanitizeString } from '../../utils/validation';
 
 export const UserProfilePage = () => {
   const { user, login } = useAuth();
@@ -106,7 +107,42 @@ export const UserProfilePage = () => {
     setError('');
 
     try {
-      const updated = await userService.updateProfile(form);
+      // Validate form inputs
+      const firstNameValidation = validateName(form.firstName, t.profile?.firstName || 'First Name');
+      if (!firstNameValidation.valid) {
+        setError(firstNameValidation.error);
+        return;
+      }
+
+      const lastNameValidation = validateName(form.lastName, t.profile?.lastName || 'Last Name');
+      if (!lastNameValidation.valid) {
+        setError(lastNameValidation.error);
+        return;
+      }
+
+      // URL is optional, but if provided should be valid
+      if (form.imageUrl && form.imageUrl.trim()) {
+        const urlValidation = validateURL(form.imageUrl, false);
+        if (!urlValidation.valid) {
+          setError(urlValidation.error);
+          return;
+        }
+      }
+
+      // Sanitize inputs
+      const sanitizedForm = {
+        firstName: sanitizeString(form.firstName),
+        lastName: sanitizeString(form.lastName),
+        imageUrl: sanitizeString(form.imageUrl),
+        country: sanitizeString(form.country),
+        address: sanitizeString(form.address),
+      };
+
+      const updated = await userService.updateProfile(sanitizedForm);
+      
+      if (!updated) {
+        throw new Error('Invalid response from server');
+      }
       
       // safely read stored token
       let storedToken = null;
@@ -123,7 +159,20 @@ export const UserProfilePage = () => {
       
       setMsg(t.profile?.updateSuccess || 'Profile updated successfully.');
     } catch (err) {
-      setError(t.profile?.updateError || 'Update failed.');
+      console.error('Profile update error:', err);
+      let errorMessage = t.profile?.updateError || 'Update failed.';
+      
+      if (err.response) {
+        if (err.response.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     }
   };
 
@@ -133,22 +182,55 @@ export const UserProfilePage = () => {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
-    if (pwdForm.newPassword !== pwdForm.repeatPassword) {
-      setError(t.profile?.passwordMismatch || "New passwords don't match.");
-      return;
-    }
+    setError('');
+    setMsg('');
 
     try {
+      // Validate old password is provided
+      if (!pwdForm.oldPassword || pwdForm.oldPassword.trim().length === 0) {
+        setError(t.profile?.oldPasswordRequired || 'Current password is required.');
+        return;
+      }
+
+      // Validate new password
+      const passwordValidation = validatePassword(pwdForm.newPassword);
+      if (!passwordValidation.valid) {
+        setError(passwordValidation.error);
+        return;
+      }
+
+      // Validate passwords match
+      const passwordMatchValidation = validatePasswordMatch(pwdForm.newPassword, pwdForm.repeatPassword);
+      if (!passwordMatchValidation.valid) {
+        setError(passwordMatchValidation.error);
+        return;
+      }
+
       await userService.updatePassword({
         oldPassword: pwdForm.oldPassword,
         newPassword: pwdForm.newPassword
       });
+      
       setMsg(t.profile?.passwordSuccess || 'Password updated successfully.');
       setPwdForm({ oldPassword: '', newPassword: '', repeatPassword: '' });
       setError('');
     } catch (err) {
-      setError(t.profile?.passwordError || 'Password change failed.');
+      console.error('Password change error:', err);
+      let errorMessage = t.profile?.passwordError || 'Password change failed.';
+      
+      if (err.response) {
+        if (err.response.status === 401) {
+          errorMessage = t.profile?.wrongPassword || 'Current password is incorrect.';
+        } else if (err.response.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     }
   };
 

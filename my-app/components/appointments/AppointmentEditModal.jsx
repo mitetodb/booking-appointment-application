@@ -3,18 +3,34 @@ import { appointmentService } from '../../services/appointmentService';
 import { BookingSlots } from './BookingSlots';
 import { toLocalDateTimeString } from '../../utils/dateUtils';
 import { useTranslation } from '../../hooks/useTranslation';
+import { validateDate, validateAppointmentType, validatePaymentType, validateUUID } from '../../utils/validation';
 
 export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved, updateFunction }) => {
   const { t } = useTranslation();
-  const [selectedSlot, setSelectedSlot] = useState(
-    new Date(appointment.dateTime)
-  );
-  const [type, setType] = useState(appointment.type);
-  const [payment, setPayment] = useState(appointment.paymentType);
+  
+  // Safely initialize state with validation
+  const getInitialDate = () => {
+    try {
+      if (appointment && appointment.dateTime) {
+        const date = new Date(appointment.dateTime);
+        if (!isNaN(date.getTime())) {
+          return date;
+        }
+      }
+    } catch (e) {
+      console.warn('Error parsing appointment date:', e);
+    }
+    return new Date(); // Fallback to current date
+  };
+
+  const [selectedSlot, setSelectedSlot] = useState(getInitialDate());
+  const [type, setType] = useState(appointment?.type || 'PRIMARY');
+  const [payment, setPayment] = useState(appointment?.paymentType || 'PRIVATE');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Use provided updateFunction if available, otherwise use default appointmentService
   const updateFn = updateFunction || appointmentService.update.bind(appointmentService);
 
   const handleSubmit = async () => {
@@ -22,19 +38,58 @@ export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved, up
     setLoading(true);
 
     try {
+      // Validate appointment ID
+      if (!appointment || !appointment.id) {
+        throw new Error('Appointment information is missing');
+      }
+
+      const appointmentIdValidation = validateUUID(appointment.id);
+      if (!appointmentIdValidation.valid) {
+        throw new Error('Invalid appointment ID');
+      }
+
+      // Validate selected slot
       if (!selectedSlot) {
         setError(t.appointments?.selectTimeError || 'Please select a time slot.');
         setLoading(false);
         return;
       }
 
+      const slotDate = selectedSlot instanceof Date ? selectedSlot : new Date(selectedSlot);
+      const dateValidation = validateDate(slotDate);
+      if (!dateValidation.valid) {
+        setError(t.appointments?.invalidDateError || 'Invalid date selected.');
+        setLoading(false);
+        return;
+      }
+
+      // Validate type and payment
       if (!type || !payment) {
         setError(t.appointments?.fillAllFields || 'Please fill in all fields.');
         setLoading(false);
         return;
       }
 
-      const slotDate = selectedSlot instanceof Date ? selectedSlot : new Date(selectedSlot);
+      const typeValidation = validateAppointmentType(type);
+      if (!typeValidation.valid) {
+        setError(typeValidation.error);
+        setLoading(false);
+        return;
+      }
+
+      const paymentValidation = validatePaymentType(payment);
+      if (!paymentValidation.valid) {
+        setError(paymentValidation.error);
+        setLoading(false);
+        return;
+      }
+
+      // Check if doctor accepts NHIF if that payment type is selected
+      if (payment === 'NHIF' && doctor && !doctor.worksWithHealthInsurance) {
+        setError(t.appointments?.nhifNotAvailable || 'This doctor does not accept NHIF payments.');
+        setLoading(false);
+        return;
+      }
       
       const dateTimeString = toLocalDateTimeString(slotDate);
       
@@ -51,11 +106,15 @@ export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved, up
       const updated = await updateFn(appointment.id, payload);
       console.debug('Update response:', updated);
       
-      if (updated && updated.id) {
-        onSaved(updated);
-      } else {
-        throw new Error('Update response was invalid');
+      if (!updated) {
+        throw new Error('No response from server');
       }
+
+      if (updated.id && updated.id !== appointment.id) {
+        console.warn('Appointment ID mismatch in response');
+      }
+      
+      onSaved(updated);
     } catch (err) {
       console.error('Failed to update appointment', err);
       console.error('Error details:', {

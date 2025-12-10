@@ -9,6 +9,7 @@ import { Loading } from '../../components/common/Loading';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getSpecialtyById, getSpecialtyIdByName } from '../../constants/specialties';
+import { validateUUID } from '../../utils/validation';
 
 export const DoctorDetailsPage = () => {
   const { doctorId } = useParams();
@@ -33,18 +34,50 @@ export const DoctorDetailsPage = () => {
       setError('');
 
       try {
+        // Validate doctorId
+        if (!doctorId) {
+          throw new Error('Doctor ID is missing');
+        }
+
+        const doctorIdValidation = validateUUID(doctorId);
+        if (!doctorIdValidation.valid) {
+          throw new Error('Invalid doctor ID format');
+        }
+
         const data = await doctorService.getById(doctorId);
+        
+        if (!data || !data.id) {
+          throw new Error('Invalid doctor data received');
+        }
+        
         setDoctor(data);
       } catch (err) {
-        console.error(err);
-        setError(t.doctors?.loadError || 'Failed to load doctor details.');
+        console.error('Error loading doctor:', err);
+        let errorMessage = t.doctors?.loadError || 'Failed to load doctor details.';
+        
+        if (err.response) {
+          if (err.response.status === 404) {
+            errorMessage = t.doctors?.notFound || 'Doctor not found.';
+          } else if (err.response.data?.message) {
+            errorMessage = err.response.data.message;
+          } else if (typeof err.response.data === 'string') {
+            errorMessage = err.response.data;
+          }
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    if (authReady) {
+    if (authReady && doctorId) {
       fetchDoctor();
+    } else if (authReady && !doctorId) {
+      setError('Doctor ID is required');
+      setLoading(false);
     }
   }, [doctorId, authReady, t]);
 

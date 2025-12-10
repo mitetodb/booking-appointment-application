@@ -10,7 +10,9 @@ export const NotificationsProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = Array.isArray(notifications) 
+    ? notifications.filter((n) => n && !n.read).length 
+    : 0;
 
   const loadNotifications = async () => {
     if (!isAuthenticated) {
@@ -21,7 +23,18 @@ export const NotificationsProvider = ({ children }) => {
     try {
       setLoading(true);
       const data = await notificationService.getMyNotifications();
-      setNotifications(data);
+      
+      // Defensive check: ensure data is an array
+      if (Array.isArray(data)) {
+        setNotifications(data);
+      } else if (data && Array.isArray(data.notifications)) {
+        setNotifications(data.notifications);
+      } else if (data && Array.isArray(data.data)) {
+        setNotifications(data.data);
+      } else {
+        console.warn('Unexpected notifications response format:', data);
+        setNotifications([]);
+      }
     } catch (err) {
       if (err.response?.status === 403) {
         console.debug('Notifications not available (403 Forbidden)');
@@ -36,13 +49,19 @@ export const NotificationsProvider = ({ children }) => {
   };
 
   const markAsRead = async (id) => {
+    if (!id) {
+      console.warn('Cannot mark notification as read: ID is missing');
+      return;
+    }
+
     try {
       await notificationService.markAsRead(id);
       setNotifications((items) =>
-        items.map((n) => (n.id === id ? { ...n, read: true } : n)),
+        items.map((n) => (n && n.id === id ? { ...n, read: true } : n)),
       );
     } catch (err) {
       console.error('Failed to mark notification as read', err);
+      // Optionally show user-friendly error, but don't crash
     }
   };
 

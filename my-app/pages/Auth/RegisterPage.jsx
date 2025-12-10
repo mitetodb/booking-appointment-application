@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from '../../hooks/useTranslation';
+import { validateEmail, validatePassword, validatePasswordMatch, validateName, sanitizeString } from '../../utils/validation';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -18,38 +19,104 @@ export const RegisterPage = () => {
   });
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
 
-    if (form.password !== form.repeatPassword) {
-      return setError("Паролите не съвпадат.");
+    // Validate all fields
+    const firstNameValidation = validateName(form.firstName, t.auth.firstName || 'First Name');
+    if (!firstNameValidation.valid) {
+      setFieldErrors(prev => ({ ...prev, firstName: firstNameValidation.error }));
+    }
+
+    const lastNameValidation = validateName(form.lastName, t.auth.lastName || 'Last Name');
+    if (!lastNameValidation.valid) {
+      setFieldErrors(prev => ({ ...prev, lastName: lastNameValidation.error }));
+    }
+
+    const emailValidation = validateEmail(form.email);
+    if (!emailValidation.valid) {
+      setFieldErrors(prev => ({ ...prev, email: emailValidation.error }));
+    }
+
+    const passwordValidation = validatePassword(form.password);
+    if (!passwordValidation.valid) {
+      setFieldErrors(prev => ({ ...prev, password: passwordValidation.error }));
+    }
+
+    const passwordMatchValidation = validatePasswordMatch(form.password, form.repeatPassword);
+    if (!passwordMatchValidation.valid) {
+      setFieldErrors(prev => ({ ...prev, repeatPassword: passwordMatchValidation.error }));
+    }
+
+    // If any validation failed, don't submit
+    if (Object.keys(fieldErrors).length > 0 || 
+        !firstNameValidation.valid || !lastNameValidation.valid || 
+        !emailValidation.valid || !passwordValidation.valid || !passwordMatchValidation.valid) {
+      return;
     }
 
     try {
+      setLoading(true);
       const payload = {
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        password: form.password,
+        firstName: sanitizeString(form.firstName),
+        lastName: sanitizeString(form.lastName),
+        email: sanitizeString(form.email),
+        password: form.password, // Don't trim password
       };
 
       const data = await authService.register(payload);
+      
+      if (!data || !data.user || !data.token) {
+        throw new Error('Invalid response from server');
+      }
 
       // API returns { user, token }
       login(data.user, data.token);
 
       navigate('/');
     } catch (err) {
-      setError(t.auth.registerError);
+      console.error('Registration error:', err);
+      let errorMessage = t.auth.registerError;
+      
+      if (err.response) {
+        if (err.response.status === 409 || err.response.status === 400) {
+          errorMessage = err.response.data?.message || t.auth.emailExists || 'Email already exists';
+        } else if (err.response.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (err.request) {
+        errorMessage = t.auth.networkError || 'Network error. Please check your connection.';
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,7 +137,11 @@ export const RegisterPage = () => {
             onChange={handleChange}
             placeholder={t.auth.firstNamePlaceholder}
             required
+            disabled={loading}
+            className={fieldErrors.firstName ? 'input-error' : ''}
+            maxLength={50}
           />
+          {fieldErrors.firstName && <small className="field-error">{fieldErrors.firstName}</small>}
         </label>
 
         <label>
@@ -82,7 +153,11 @@ export const RegisterPage = () => {
             onChange={handleChange}
             placeholder={t.auth.lastNamePlaceholder}
             required
+            disabled={loading}
+            className={fieldErrors.lastName ? 'input-error' : ''}
+            maxLength={50}
           />
+          {fieldErrors.lastName && <small className="field-error">{fieldErrors.lastName}</small>}
         </label>
 
         <label>
@@ -94,7 +169,11 @@ export const RegisterPage = () => {
             onChange={handleChange}
             placeholder={t.auth.emailPlaceholder}
             required
+            disabled={loading}
+            className={fieldErrors.email ? 'input-error' : ''}
+            maxLength={255}
           />
+          {fieldErrors.email && <small className="field-error">{fieldErrors.email}</small>}
         </label>
 
         <label>
@@ -107,7 +186,11 @@ export const RegisterPage = () => {
             placeholder="Minimum 6 characters"
             required
             minLength={6}
+            maxLength={128}
+            disabled={loading}
+            className={fieldErrors.password ? 'input-error' : ''}
           />
+          {fieldErrors.password && <small className="field-error">{fieldErrors.password}</small>}
         </label>
 
         <label>
@@ -119,12 +202,18 @@ export const RegisterPage = () => {
             onChange={handleChange}
             placeholder={t.auth.repeatPasswordPlaceholder}
             required
+            disabled={loading}
+            className={fieldErrors.repeatPassword ? 'input-error' : ''}
+            maxLength={128}
           />
+          {fieldErrors.repeatPassword && <small className="field-error">{fieldErrors.repeatPassword}</small>}
         </label>
 
         {error && <p className="error">{error}</p>}
 
-        <button type="submit">{t.auth.register}</button>
+        <button type="submit" disabled={loading}>
+          {loading ? (t.common?.loading || 'Loading...') : t.auth.register}
+        </button>
 
         <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)' }}>
           {t.auth.haveAccount}{' '}

@@ -384,6 +384,7 @@ a {
   border-radius: 4px;
   appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   position: relative;
   transition: all 0.2s ease;
@@ -2766,6 +2767,7 @@ body {
   cursor: pointer;
   position: relative;
   -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: textfield;
 }
 
@@ -2783,6 +2785,7 @@ body {
 .date-picker::-webkit-inner-spin-button,
 .date-picker::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
@@ -3346,6 +3349,30 @@ body {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+/* Input validation styles */
+.input-error {
+  border-color: var(--danger) !important;
+  background-color: #fef2f2;
+}
+
+.input-error:focus {
+  outline-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.field-error {
+  display: block;
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.field-error::before {
+  content: "⚠ ";
+  margin-right: 0.25rem;
 }
 
 @media (max-width: 768px) {
