@@ -24,5 +24,11 @@ export const assistantService = {
   async cancelAppointment(appointmentId) {
     const res = await api.delete(`/assistant/appointments/${appointmentId}`);
     return res.data;
+  },
+
+  async getAllUsers() {
+    const res = await api.get('/assistant/users');
+    const users = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.users || []);
+    return users;
   }
 };

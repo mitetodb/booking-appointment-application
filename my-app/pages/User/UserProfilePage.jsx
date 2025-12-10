@@ -7,6 +7,7 @@ import { Loading } from '../../components/common/Loading';
 import { useTranslation } from '../../hooks/useTranslation';
 import { Roles } from '../../constants/role';
 import { SpecialtySelector } from '../../components/common/SpecialtySelector';
+import { AssistantSelector } from '../../components/common/AssistantSelector';
 
 export const UserProfilePage = () => {
   const { user, login } = useAuth();
@@ -26,6 +27,9 @@ export const UserProfilePage = () => {
   const [doctorProfile, setDoctorProfile] = useState(null);
   const [specialtyId, setSpecialtyId] = useState(null);
   const [updatingSpecialty, setUpdatingSpecialty] = useState(false);
+  const [assistants, setAssistants] = useState([]);
+  const [assistantId, setAssistantId] = useState(null);
+  const [updatingAssistant, setUpdatingAssistant] = useState(false);
 
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
@@ -53,14 +57,29 @@ export const UserProfilePage = () => {
           address: data.address || ''
         });
 
-        // If user is a doctor, load doctor profile for specialty
+        // If user is a doctor, load doctor profile for specialty and assistant
         if (data.role === Roles.DOCTOR) {
           try {
+            // Load assistants list
+            try {
+              const assistantsList = await doctorService.getAllAssistants();
+              const assistantsArray = Array.isArray(assistantsList) ? assistantsList : (assistantsList?.data || assistantsList?.assistants || []);
+              setAssistants(assistantsArray);
+            } catch (assistantsErr) {
+              console.warn('Could not load assistants:', assistantsErr);
+              setAssistants([]);
+            }
+
+            // Load doctor profile
             const doctorData = await doctorService.getMyProfile();
             setDoctorProfile(doctorData);
             // Backend returns specialtyId as number: { id: "...", specialtyId: 8 }
             if (doctorData.specialtyId !== undefined && doctorData.specialtyId !== null) {
               setSpecialtyId(Number(doctorData.specialtyId));
+            }
+            // Backend returns assistantId: { id: "...", assistantId: "..." }
+            if (doctorData.assistantId !== undefined && doctorData.assistantId !== null) {
+              setAssistantId(doctorData.assistantId);
             }
           } catch (doctorErr) {
             console.warn('Could not load doctor profile:', doctorErr);
@@ -152,6 +171,28 @@ export const UserProfilePage = () => {
       setError(errorMsg);
     } finally {
       setUpdatingSpecialty(false);
+    }
+  };
+
+  const handleAssistantChange = async (newAssistantId) => {
+    if (newAssistantId === assistantId) return;
+
+    setUpdatingAssistant(true);
+    setError('');
+
+    try {
+      const updated = await doctorService.updateMyAssistant(newAssistantId);
+      setAssistantId(newAssistantId);
+      if (updated) {
+        setDoctorProfile(updated);
+      }
+      setMsg(t.profile?.assistantUpdateSuccess || 'Assistant updated successfully.');
+    } catch (err) {
+      console.error('Failed to update assistant:', err);
+      const errorMsg = err.response?.data?.message || err.message || t.profile?.assistantUpdateError || 'Failed to update assistant.';
+      setError(errorMsg);
+    } finally {
+      setUpdatingAssistant(false);
     }
   };
 
@@ -312,6 +353,36 @@ export const UserProfilePage = () => {
                   />
                 </label>
                 {updatingSpecialty && (
+                  <small className="form-hint" style={{ color: 'var(--primary)' }}>
+                    {t.common?.loading || 'Updating...'}
+                  </small>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Doctor Assistant Card - Only for Doctors */}
+        {user?.role === Roles.DOCTOR && (
+          <div className="profile-card">
+            <div className="profile-card-header">
+              <h3>{t.profile?.assistant || 'Assistant'}</h3>
+              <p className="card-subtitle">{t.profile?.assistantDesc || 'Select your assistant'}</p>
+            </div>
+
+            <div className="profile-form">
+              <div className="form-group">
+                <label>
+                  {t.profile?.assistant || 'Assistant'}
+                  <AssistantSelector
+                    value={assistantId}
+                    onChange={handleAssistantChange}
+                    placeholder={t.profile?.selectAssistant || 'Select assistant'}
+                    disabled={updatingAssistant}
+                    assistants={assistants}
+                  />
+                </label>
+                {updatingAssistant && (
                   <small className="form-hint" style={{ color: 'var(--primary)' }}>
                     {t.common?.loading || 'Updating...'}
                   </small>

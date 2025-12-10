@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { doctorService } from "../../services/doctorService";
 import { useLanguage } from "../../contexts/LanguageContext";
-import { getLocaleFromLanguage, toLocalDateTimeString } from "../../utils/dateUtils";
+import { getLocaleFromLanguage } from "../../utils/dateUtils";
 import { Loading } from "../../components/common/Loading";
 import { ErrorBox } from "../../components/common/ErrorBox";
 import { useTranslation } from "../../hooks/useTranslation";
+import { AppointmentEditModal } from "../../components/appointments/AppointmentEditModal";
+import { AppointmentCancelModal } from "../../components/appointments/AppointmentCancelModal";
 
 export const DoctorAppointmentsPage = () => {
   const { language } = useLanguage();
@@ -13,12 +15,26 @@ export const DoctorAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [doctor, setDoctor] = useState(null);
+  const [editModal, setEditModal] = useState(null);
+  const [cancelId, setCancelId] = useState(null);
 
   useEffect(() => {
     const load = async () => {
       try {
         setLoading(true);
         setError("");
+        // Load doctor profile and working hours (needed for edit modal)
+        const [doctorData, workingHours] = await Promise.all([
+          doctorService.getMyProfile(),
+          doctorService.getMyWorkingHours().catch(() => [])
+        ]);
+        
+        setDoctor({
+          ...doctorData,
+          workingHours: Array.isArray(workingHours) ? workingHours : (workingHours?.workingHours || [])
+        });
+        
         const data = await doctorService.getMyAppointments();
         setAppointments(data || []);
       } catch (err) {
@@ -32,32 +48,35 @@ export const DoctorAppointmentsPage = () => {
     load();
   }, [t]);
 
-  const move = async (appointment, direction) => {
-    try {
-      const date = new Date(appointment.dateTime);
-      const newDate = new Date(
-        date.getTime() + direction * 20 * 60 * 1000 // +/- 20 minutes
-      );
-
-      // Format dateTime without timezone (backend expects LocalDateTime format)
-      const newDateTimeString = toLocalDateTimeString(newDate);
-
-      const updated = await doctorService.moveAppointment(appointment.id, {
-        newDateTime: newDateTimeString,
-      });
-
-      setAppointments((apps) =>
-        apps.map((a) => (a.id === updated.id ? updated : a))
-      );
-    } catch (err) {
-      console.error("Error moving appointment:", err);
-      const errorMsg = err.response?.data?.message || err.message || "Failed to move appointment.";
-      setError(errorMsg);
-    }
+  const translateAppointmentType = (type) => {
+    if (!type) return '';
+    const typeMap = {
+      'PRIMARY': t.doctors?.primary || 'Primary',
+      'FOLLOW_UP': t.doctors?.followUp || 'Follow-up',
+    };
+    return typeMap[type] || type;
   };
 
-  const moveUp = (a) => move(a, -1);
-  const moveDown = (a) => move(a, 1);
+  const translatePaymentType = (paymentType) => {
+    if (!paymentType) return '';
+    const paymentMap = {
+      'PRIVATE': t.doctors?.private || 'Private',
+      'NHIF': t.doctors?.nhif || 'NHIF',
+    };
+    return paymentMap[paymentType] || paymentType;
+  };
+
+  const handleEditSuccess = (updated) => {
+    setAppointments((apps) =>
+      apps.map((a) => (a.id === updated.id ? updated : a))
+    );
+    setEditModal(null);
+  };
+
+  const handleCancelSuccess = () => {
+    setAppointments((apps) => apps.filter((a) => a.id !== cancelId));
+    setCancelId(null);
+  };
 
   if (loading) return <Loading />;
   if (error && !appointments.length) return <ErrorBox message={error} />;
@@ -107,23 +126,54 @@ export const DoctorAppointmentsPage = () => {
                       })}
                     </span>
                   </div>
-                  {a.type && (
-                    <span className="doctor-appointment-type">{a.type}</span>
-                  )}
+                  <div className="doctor-appointment-meta">
+                    {a.type && (
+                      <span className="appointment-type-badge">
+                        {translateAppointmentType(a.type)}
+                      </span>
+                    )}
+                    {a.paymentType && (
+                      <span className="appointment-payment-badge">
+                        {translatePaymentType(a.paymentType)}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="doctor-actions">
-                  <button className="btn btn-small" onClick={() => moveUp(a)}>
-                    ↑ {t.schedule?.moveUp || "Move Up"}
+                  <button className="btn btn-small" onClick={() => setEditModal(a)}>
+                    {t.appointments?.edit || "Edit"}
                   </button>
-                  <button className="btn btn-small" onClick={() => moveDown(a)}>
-                    ↓ {t.schedule?.moveDown || "Move Down"}
+                  <button
+                    className="btn-danger btn-small"
+                    onClick={() => setCancelId(a.id)}
+                  >
+                    {t.appointments?.cancel || "Cancel"}
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {editModal && doctor && (
+        <AppointmentEditModal
+          appointment={editModal}
+          doctor={doctor}
+          onClose={() => setEditModal(null)}
+          onSaved={handleEditSuccess}
+          updateFunction={doctorService.updateAppointment.bind(doctorService)}
+        />
+      )}
+
+      {cancelId && (
+        <AppointmentCancelModal
+          appointmentId={cancelId}
+          onClose={() => setCancelId(null)}
+          onCanceled={handleCancelSuccess}
+          cancelFunction={doctorService.cancelAppointment.bind(doctorService)}
+        />
       )}
     </section>
   );

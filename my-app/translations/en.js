@@ -130,6 +130,11 @@ const translations = {
     notFoundError: 'Appointment not found.',
     permissionError: 'You do not have permission to update this appointment.',
     serverError: 'Server error. Please try again later.',
+    cancelTitle: 'Cancel Appointment?',
+    cancelMessage: 'This action cannot be undone.',
+    confirmCancel: 'Confirm Cancel',
+    canceling: 'Canceling...',
+    cancelError: 'Failed to cancel appointment.',
   },
 
   // Schedule
@@ -231,6 +236,11 @@ const translations = {
     selectSpecialty: 'Select specialty',
     specialtyUpdateSuccess: 'Specialty updated successfully.',
     specialtyUpdateError: 'Failed to update specialty.',
+    assistant: 'Assistant',
+    assistantDesc: 'Select your assistant',
+    selectAssistant: 'Select assistant',
+    assistantUpdateSuccess: 'Assistant updated successfully.',
+    assistantUpdateError: 'Failed to update assistant.',
   },
 
   // Admin
@@ -260,6 +270,35 @@ const translations = {
     statusInactive: 'Inactive',
     statusBlocked: 'Blocked',
     statusPending: 'Pending',
+  },
+
+  // Assistant
+  assistant: {
+    title: 'Assistant Panel',
+    subtitle: 'Manage appointments for your assigned doctors',
+    loadingDoctors: 'Loading doctors...',
+    manageAppointments: 'Manage Appointments',
+    noDoctors: 'No doctors assigned.',
+    appointmentsTitle: 'Appointments for Dr. {name}',
+    appointmentsTitleDefault: 'Appointments',
+    addAppointment: 'Add Appointment',
+    loadingAppointments: 'Loading appointments...',
+    patientName: 'Patient Name',
+    edit: 'Edit',
+    cancel: 'Cancel',
+    createAppointment: 'Create New Appointment',
+    editAppointment: 'Edit Appointment',
+    patientNamePlaceholder: 'Enter patient name',
+    type: 'Type',
+    payment: 'Payment',
+    create: 'Create',
+    save: 'Save',
+    close: 'Close',
+    selectTimeAndPatient: 'Please select time and patient.',
+    selectPatient: 'Select patient',
+    createError: 'Failed to create appointment.',
+    updateError: 'Failed to update appointment.',
+    loadError: 'Failed to load data.',
   },
 
   // Footer

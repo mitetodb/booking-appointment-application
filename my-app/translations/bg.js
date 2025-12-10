@@ -130,6 +130,11 @@ const translations = {
     notFoundError: 'Часът не е намерен.',
     permissionError: 'Нямате разрешение да актуализирате този час.',
     serverError: 'Грешка на сървъра. Моля, опитайте отново по-късно.',
+    cancelTitle: 'Отмени час?',
+    cancelMessage: 'Това действие не може да бъде отменено.',
+    confirmCancel: 'Потвърди отмяна',
+    canceling: 'Отменяне...',
+    cancelError: 'Неуспешно отменяне на час.',
   },
 
   // Schedule
@@ -231,6 +236,11 @@ const translations = {
     selectSpecialty: 'Изберете специализация',
     specialtyUpdateSuccess: 'Специализацията е актуализирана успешно.',
     specialtyUpdateError: 'Неуспешно актуализиране на специализацията.',
+    assistant: 'Асистент',
+    assistantDesc: 'Изберете вашия асистент',
+    selectAssistant: 'Изберете асистент',
+    assistantUpdateSuccess: 'Асистентът е актуализиран успешно.',
+    assistantUpdateError: 'Неуспешно актуализиране на асистента.',
   },
 
   // Admin
@@ -260,6 +270,35 @@ const translations = {
     statusInactive: 'Неактивен',
     statusBlocked: 'Блокиран',
     statusPending: 'В очакване',
+  },
+
+  // Assistant
+  assistant: {
+    title: 'Асистент панел',
+    subtitle: 'Управлявайте часовете за вашите назначени лекари',
+    loadingDoctors: 'Зареждане на лекари...',
+    manageAppointments: 'Управлявай часове',
+    noDoctors: 'Няма назначени лекари.',
+    appointmentsTitle: 'Часове за д-р {name}',
+    appointmentsTitleDefault: 'Часове',
+    addAppointment: 'Добави час',
+    loadingAppointments: 'Зареждане на часове...',
+    patientName: 'Име на пациент',
+    edit: 'Редактирай',
+    cancel: 'Отмени',
+    createAppointment: 'Създай нов час',
+    editAppointment: 'Редактирай час',
+    patientNamePlaceholder: 'Въведете име на пациент',
+    type: 'Тип',
+    payment: 'Плащане',
+    create: 'Създай',
+    save: 'Запази',
+    close: 'Затвори',
+    selectTimeAndPatient: 'Моля, изберете час и пациент.',
+    selectPatient: 'Изберете пациент',
+    createError: 'Неуспешно създаване на час.',
+    updateError: 'Неуспешно актуализиране на час.',
+    loadError: 'Неуспешно зареждане на данни.',
   },
 
   // Footer

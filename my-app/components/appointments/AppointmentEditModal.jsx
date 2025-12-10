@@ -4,7 +4,7 @@ import { BookingSlots } from './BookingSlots';
 import { toLocalDateTimeString } from '../../utils/dateUtils';
 import { useTranslation } from '../../hooks/useTranslation';
 
-export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved }) => {
+export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved, updateFunction }) => {
   const { t } = useTranslation();
   const [selectedSlot, setSelectedSlot] = useState(
     new Date(appointment.dateTime)
@@ -14,6 +14,8 @@ export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved }) 
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const updateFn = updateFunction || appointmentService.update.bind(appointmentService);
 
   const handleSubmit = async () => {
     setError('');
@@ -42,11 +44,11 @@ export const AppointmentEditModal = ({ appointment, doctor, onClose, onSaved }) 
         paymentType: payment
       };
 
-      console.debug('Updating appointment via PUT /api/appointments/' + appointment.id);
+      console.debug('Updating appointment:', appointment.id);
       console.debug('Payload:', payload);
       console.debug('Formatted dateTime:', dateTimeString);
 
-      const updated = await appointmentService.update(appointment.id, payload);
+      const updated = await updateFn(appointment.id, payload);
       console.debug('Update response:', updated);
       
       if (updated && updated.id) {

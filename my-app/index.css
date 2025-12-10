@@ -3071,6 +3071,13 @@ body {
   border: 1px solid var(--primary-light);
 }
 
+.doctor-appointment-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
 .doctor-actions {
   display: flex;
   gap: 0.75rem;
@@ -3123,6 +3130,244 @@ body {
   }
 
   .doctor-actions .btn {
+    flex: 1;
+    min-width: auto;
+  }
+}
+
+/* Assistant Page Styles */
+.assistant-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.assistant-header {
+  margin-bottom: 2rem;
+}
+
+.assistant-header h2 {
+  font-size: 2.25rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.assistant-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.assistant-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.assistant-message.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.assistant-message .message-icon {
+  font-size: 1.25rem;
+}
+
+.assistant-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 2px dashed var(--border);
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.doctor-card-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.doctor-card-actions .btn-primary {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Assistant Appointments Page Styles */
+.assistant-appointments-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.assistant-appointments-header {
+  margin-bottom: 2rem;
+}
+
+.assistant-appointments-header h2 {
+  font-size: 2.25rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.assistant-appointments-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.assistant-appointments-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.assistant-appointments-message.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.assistant-appointments-message .message-icon {
+  font-size: 1.25rem;
+}
+
+.assistant-appointments-actions {
+  margin-bottom: 2rem;
+}
+
+.assistant-appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assistant-appointment-card {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.assistant-appointment-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.assistant-appointment-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.assistant-appointment-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.assistant-appointment-patient {
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.assistant-appointment-datetime {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.assistant-appointment-date {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assistant-appointment-time {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assistant-appointment-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.appointment-type-badge,
+.appointment-payment-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--bg-tertiary);
+  color: var(--primary-dark);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--primary-light);
+}
+
+.assistant-appointment-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .assistant-page,
+  .assistant-appointments-page {
+    padding: 1rem;
+  }
+
+  .doctors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-appointment-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .assistant-appointment-actions {
+    justify-content: stretch;
+  }
+
+  .assistant-appointment-actions .btn {
     flex: 1;
     min-width: auto;
   }

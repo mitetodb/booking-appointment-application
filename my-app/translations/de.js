@@ -130,6 +130,11 @@ const translations = {
     notFoundError: 'Termin nicht gefunden.',
     permissionError: 'Sie haben keine Berechtigung, diesen Termin zu aktualisieren.',
     serverError: 'Serverfehler. Bitte versuchen Sie es später erneut.',
+    cancelTitle: 'Termin stornieren?',
+    cancelMessage: 'Diese Aktion kann nicht rückgängig gemacht werden.',
+    confirmCancel: 'Stornierung bestätigen',
+    canceling: 'Wird storniert...',
+    cancelError: 'Termin konnte nicht storniert werden.',
   },
 
   // Schedule
@@ -231,6 +236,11 @@ const translations = {
     selectSpecialty: 'Fachrichtung auswählen',
     specialtyUpdateSuccess: 'Fachrichtung erfolgreich aktualisiert.',
     specialtyUpdateError: 'Fachrichtung konnte nicht aktualisiert werden.',
+    assistant: 'Assistent',
+    assistantDesc: 'Wählen Sie Ihren Assistenten',
+    selectAssistant: 'Assistent auswählen',
+    assistantUpdateSuccess: 'Assistent erfolgreich aktualisiert.',
+    assistantUpdateError: 'Assistent konnte nicht aktualisiert werden.',
   },
 
   // Admin
@@ -260,6 +270,35 @@ const translations = {
     statusInactive: 'Inaktiv',
     statusBlocked: 'Gesperrt',
     statusPending: 'Ausstehend',
+  },
+
+  // Assistant
+  assistant: {
+    title: 'Assistenten-Panel',
+    subtitle: 'Verwalten Sie Termine für Ihre zugewiesenen Ärzte',
+    loadingDoctors: 'Ärzte werden geladen...',
+    manageAppointments: 'Termine verwalten',
+    noDoctors: 'Keine Ärzte zugewiesen.',
+    appointmentsTitle: 'Termine für Dr. {name}',
+    appointmentsTitleDefault: 'Termine',
+    addAppointment: 'Termin hinzufügen',
+    loadingAppointments: 'Termine werden geladen...',
+    patientName: 'Patientenname',
+    edit: 'Bearbeiten',
+    cancel: 'Stornieren',
+    createAppointment: 'Neuen Termin erstellen',
+    editAppointment: 'Termin bearbeiten',
+    patientNamePlaceholder: 'Patientenname eingeben',
+    type: 'Typ',
+    payment: 'Zahlung',
+    create: 'Erstellen',
+    save: 'Speichern',
+    close: 'Schließen',
+    selectTimeAndPatient: 'Bitte wählen Sie eine Zeit und einen Patienten aus.',
+    selectPatient: 'Patienten auswählen',
+    createError: 'Termin konnte nicht erstellt werden.',
+    updateError: 'Termin konnte nicht aktualisiert werden.',
+    loadError: 'Daten konnten nicht geladen werden.',
   },
 
   // Footer

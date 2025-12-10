@@ -41,8 +41,29 @@ export const doctorService = {
     return response.data;
   },
 
+  async updateAppointment(appointmentId, payload) {
+    const response = await api.put(`/doctor/appointments/${appointmentId}`, payload);
+    return response.data;
+  },
+
+  async cancelAppointment(appointmentId) {
+    const response = await api.delete(`/doctor/appointments/${appointmentId}`);
+    return response.data;
+  },
+
   async updateMySpecialty(specialtyId) {
     const response = await api.put('/doctor/me/specialty', { specialtyId });
+    return response.data;
+  },
+
+  async getAllAssistants() {
+    const response = await api.get('/doctors/assistants');
+    const assistants = Array.isArray(response.data) ? response.data : (response.data?.data || response.data?.assistants || []);
+    return assistants;
+  },
+
+  async updateMyAssistant(assistantId) {
+    const response = await api.put('/doctors/me/assistant', { assistantId });
     return response.data;
   }
 };
