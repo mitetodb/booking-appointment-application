@@ -26,7 +26,6 @@ GitHub: https://github.com/mitetodb/booking-appointment-svc
 
 - npm run dev
 
-- Отваряне на адреса, изписан от Vite (обикновено http://localhost:5173
-)
+- Отваряне на адреса, изписан от Vite (обикновено http://localhost:5173)
 
 Приложението използва client-side routing (React Router), контекст за автентикация, контролирани форми (login/register/booking), работа с REST API за CRUD операции върху appointments, както и базова валидация и обработка на грешки.

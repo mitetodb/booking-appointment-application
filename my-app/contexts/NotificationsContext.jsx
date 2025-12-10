@@ -57,12 +57,8 @@ export const NotificationsProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-
-    // initial load
     loadNotifications();
-
-    // polling in 60 seconds interval
-    const intervalId = setInterval(loadNotifications, 60_000);
+    const intervalId = setInterval(loadNotifications, 60_000); // 60 seconds interval
     return () => clearInterval(intervalId);
   }, [isAuthenticated]);
 

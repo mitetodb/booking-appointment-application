@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { useNotifications } from '../../hooks/useNotifications';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { getLocaleFromLanguage } from '../../utils/dateUtils';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const NotificationBell = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { language } = useLanguage();
+  const locale = getLocaleFromLanguage(language);
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const toggleOpen = () => setOpen((o) => !o);
@@ -25,17 +31,17 @@ export const NotificationBell = () => {
       {open && (
         <div className="notif-panel">
           <div className="notif-header">
-            <span>Notifications</span>
+            <span>{t.notifications?.title || 'Notifications'}</span>
             {unreadCount > 0 && (
               <button className="link-btn" onClick={markAllAsRead}>
-                Mark all as read
+                {t.notifications?.markAllAsRead || 'Mark all as read'}
               </button>
             )}
           </div>
 
           <ul className="notif-list">
             {notifications.length === 0 && (
-              <li className="notif-empty card">No notifications.</li>
+              <li className="notif-empty card">{t.notifications?.noNotifications || 'No notifications.'}</li>
             )}
 
             {notifications.map((n) => (
@@ -46,7 +52,7 @@ export const NotificationBell = () => {
               >
                 <div className="notif-message">{n.message}</div>
                 <div className="notif-time">
-                  {new Date(n.createdOn).toLocaleString()}
+                  {new Date(n.createdOn).toLocaleString(locale)}
                 </div>
               </li>
             ))}

@@ -1,0 +1,155 @@
+.language-switcher {
+  position: relative;
+  margin-left: 1rem;
+}
+
+.lang-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border: 2px solid var(--border);
+  background: var(--bg-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  min-height: 2.5rem;
+}
+
+.lang-dropdown-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.lang-dropdown-btn:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  margin-left: 0.25rem;
+}
+
+.flag {
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne Color', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  vertical-align: middle;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.lang-code {
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.lang-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  min-width: 160px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-align: left;
+  position: relative;
+}
+
+.lang-option:hover {
+  background: var(--bg-secondary);
+}
+
+.lang-option.active {
+  background: var(--bg-tertiary);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.lang-option.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+}
+
+.lang-name {
+  flex: 1;
+}
+
+.check {
+  color: var(--primary);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .language-switcher {
+    margin-left: 0.5rem;
+  }
+
+  .lang-dropdown-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .lang-code {
+    display: none;
+  }
+
+  .lang-dropdown-menu {
+    right: 0;
+    min-width: 140px;
+  }
+}
+

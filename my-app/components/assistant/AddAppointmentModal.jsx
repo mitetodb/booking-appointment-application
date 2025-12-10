@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { assistantService } from "../../services/assistantService";
 import { BookingSlots } from "../appointments/BookingSlots";
+import { toLocalDateTimeString } from "../../utils/dateUtils";
 
 export const AddAppointmentModal = ({ doctor, onClose, onSuccess }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -19,11 +20,13 @@ export const AddAppointmentModal = ({ doctor, onClose, onSuccess }) => {
 
     try {
       setLoading(true);
+      const dateTimeString = toLocalDateTimeString(selectedSlot);
+      
       const newAppointment = await assistantService.createAppointment(
         doctor.id,
         {
           patientName,
-          dateTime: selectedSlot.toISOString(),
+          dateTime: dateTimeString,
           type,
           paymentType,
         }

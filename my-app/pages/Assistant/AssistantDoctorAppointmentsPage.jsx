@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { assistantService } from "../../services/assistantService";
 import { doctorService } from "../../services/doctorService";
 import { useParams } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { getLocaleFromLanguage } from "../../utils/dateUtils";
 
 import { AddAppointmentModal } from "../../components/assistant/AddAppointmentModal";
 import { EditAppointmentModal } from "../../components/assistant/EditAppointmentModal";
@@ -9,6 +11,8 @@ import { AppointmentCancelModal } from "../../components/appointments/Appointmen
 
 export const AssistantDoctorAppointmentsPage = () => {
   const { doctorId } = useParams();
+  const { language } = useLanguage();
+  const locale = getLocaleFromLanguage(language);
 
   const [doctor, setDoctor] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -66,8 +70,8 @@ export const AssistantDoctorAppointmentsPage = () => {
             <div>
               <strong>{a.patientName}</strong>
               <div>
-                {new Date(a.dateTime).toLocaleDateString()}{" "}
-                {new Date(a.dateTime).toLocaleTimeString([], {
+                {new Date(a.dateTime).toLocaleDateString(locale)}{" "}
+                {new Date(a.dateTime).toLocaleTimeString(locale, {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}

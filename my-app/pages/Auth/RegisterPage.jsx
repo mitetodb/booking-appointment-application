@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     firstName: '',
@@ -29,7 +31,7 @@ export const RegisterPage = () => {
     setError('');
 
     if (form.password !== form.repeatPassword) {
-      return setError("Passwords don't match.");
+      return setError("Паролите не съвпадат.");
     }
 
     try {
@@ -47,73 +49,89 @@ export const RegisterPage = () => {
 
       navigate('/');
     } catch (err) {
-      setError('Registration failed. Email may already exist.');
+      setError(t.auth.registerError);
     }
   };
 
   return (
     <section>
-      <h2>Register</h2>
-
       <form onSubmit={handleSubmit} className="auth-form">
+        <div className="auth-form-header">
+          <h2>{t.auth.register}</h2>
+          <p>{t.auth.registerSubtitle}</p>
+        </div>
+
         <label>
-          First Name:
+          {t.auth.firstName}
           <input
             type="text"
             name="firstName"
             value={form.firstName}
             onChange={handleChange}
+            placeholder={t.auth.firstNamePlaceholder}
             required
           />
         </label>
 
         <label>
-          Last Name:
+          {t.auth.lastName}
           <input
             type="text"
             name="lastName"
             value={form.lastName}
             onChange={handleChange}
+            placeholder={t.auth.lastNamePlaceholder}
             required
           />
         </label>
 
         <label>
-          Email:
+          {t.auth.email}
           <input
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
+            placeholder={t.auth.emailPlaceholder}
             required
           />
         </label>
 
         <label>
-          Password:
+          {t.auth.password}
           <input
             type="password"
             name="password"
             value={form.password}
             onChange={handleChange}
+            placeholder="Minimum 6 characters"
             required
+            minLength={6}
           />
         </label>
 
         <label>
-          Repeat Password:
+          {t.auth.repeatPassword}
           <input
             type="password"
             name="repeatPassword"
             value={form.repeatPassword}
             onChange={handleChange}
+            placeholder={t.auth.repeatPasswordPlaceholder}
             required
           />
         </label>
 
         {error && <p className="error">{error}</p>}
 
-        <button type="submit">Register</button>
+        <button type="submit">{t.auth.register}</button>
+
+        <p style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)' }}>
+          {t.auth.haveAccount}{' '}
+          <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>
+            {t.auth.signIn}
+          </Link>
+        </p>
       </form>
     </section>
   );
