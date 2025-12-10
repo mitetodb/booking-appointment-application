@@ -72,6 +72,7 @@ const translations = {
     searchPlaceholder: 'Search by name or specialty...',
     onlyInsurance: 'Health Insurance Only',
     viewDetails: 'View Details',
+    loginToView: 'Login to View Details',
     loading: 'Loading doctors...',
     loadError: 'Failed to load doctors catalog.',
     noResults: 'No doctors match your criteria.',

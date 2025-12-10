@@ -72,6 +72,7 @@ const translations = {
     searchPlaceholder: 'Suche nach Name oder Fachrichtung...',
     onlyInsurance: 'Nur Krankenversicherung',
     viewDetails: 'Details anzeigen',
+    loginToView: 'Anmelden, um Details anzuzeigen',
     loading: 'Ärzte werden geladen...',
     loadError: 'Fehler beim Laden des Ärztekatalogs.',
     noResults: 'Keine Ärzte entsprechen Ihren Kriterien.',

@@ -25,7 +25,7 @@ function App() {
       {/* Public */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<HomePage />} />
-       
+        <Route path="/doctors" element={<DoctorsCatalogPage />} />
 
         {/* Login/Register – guest only */}
         <Route
@@ -49,7 +49,6 @@ function App() {
       {/* private - authenticated */}
       <Route element={<RequireAuth />}>
         <Route element={<PrivateLayout />}>
-         <Route path="/doctors" element={<DoctorsCatalogPage />} />
          <Route path="/doctors/:doctorId" element={<DoctorDetailsPage />} />
          <Route path="/appointments" element={<MyAppointmentsPage />} />
          <Route path="/profile" element={<UserProfilePage />} />

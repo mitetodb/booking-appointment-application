@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../hooks/useAuth';
 import { getSpecialtyById, getSpecialtyIdByName } from '../../constants/specialties';
 
 export const DoctorCard = ({ doctor }) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  
+  const { isAuthenticated } = useAuth();
 
   if (!doctor || !doctor.id) {
     return null;
@@ -66,8 +67,12 @@ export const DoctorCard = ({ doctor }) => {
       </div>
 
       <div className="doctor-card-actions">
-        <Link to={`/doctors/${doctor.id}`} className="btn-primary">
-          {t.doctors.viewDetails}
+        <Link 
+          to={`/doctors/${doctor.id}`} 
+          className="btn-primary"
+          state={{ from: '/doctors' }}
+        >
+          {isAuthenticated ? t.doctors.viewDetails : (t.doctors.loginToView || 'Login to View Details')}
         </Link>
       </div>
     </article>
