@@ -362,10 +362,39 @@ The application can be deployed to **Vercel** or **Netlify** for free. Both plat
 
 ---
 
+## 🧪 Testing
+
+The project includes comprehensive unit tests using **Vitest** and **React Testing Library**.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests once (CI mode)
+npm test -- --run
+
+# Run tests with UI
+npm run test:ui
+```
+
+### Test Coverage
+
+- ✅ **82 tests** covering validation utilities, date utilities, and React components
+- ✅ Validation functions: email, password, names, URLs, dates, UUIDs
+- ✅ Date formatting and conversion utilities
+- ✅ Component rendering and user interactions
+
+📖 **Detailed testing guide**: See [TESTING.md](./TESTING.md)
+
+---
+
 ## 🔧 Development Notes
 
 ### Environment Variables
 
+- `VITE_API_BASE_URL`: Backend API URL (default: `http://localhost:8082/api`)
 - `VITE_AI_MODEL`: AI model selection (default: `claude-haiku-4.5`)
 
 ### Code Organization
@@ -373,7 +402,7 @@ The application can be deployed to **Vercel** or **Netlify** for free. Both plat
 - **Components**: Functional components with hooks
 - **Services**: Pure functions for API calls
 - **Contexts**: Global state management
-- **Utils**: Pure utility functions
+- **Utils**: Pure utility functions with comprehensive tests
 - **Constants**: Static data and configuration
 
 ### Best Practices
@@ -383,6 +412,7 @@ The application can be deployed to **Vercel** or **Netlify** for free. Both plat
 - Error messages are user-friendly and translated
 - Defensive checks prevent crashes from invalid data
 - Token management is handled automatically by interceptors
+- Unit tests for critical utilities and components
 
 ---
 
